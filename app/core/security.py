@@ -2,7 +2,7 @@ from fastapi.security.http import HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from app.core.config import settings
-from jose import JWTError, jwt
+import jwt
 from app.schemas.auth import TokenResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException, Depends, status
@@ -17,14 +17,20 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 auth_scheme = HTTPBearer()
 
 # Create Hash Password
-
-
 def get_password_hash(password):
+    # Truncate password to 72 bytes for bcrypt
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password = password_bytes[:72].decode('utf-8', errors='ignore')
     return pwd_context.hash(password)
 
 
 # Verify Hash Password
 def verify_password(plain_password, hashed_password):
+    # bcrypt limits passwords to 72 bytes; truncate input before verifying
+    password_bytes = plain_password.encode('utf-8')
+    if len(password_bytes) > 72:
+        plain_password = password_bytes[:72].decode('utf-8', errors='ignore')
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -65,7 +71,7 @@ async def create_refresh_token(data):
 def get_token_payload(token):
     try:
         return jwt.decode(token, settings.secret_key, [settings.algorithm])
-    except JWTError:
+    except jwt.DecodeError:
         raise ResponseHandler.invalid_token('access')
 
 

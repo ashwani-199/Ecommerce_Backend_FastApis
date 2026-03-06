@@ -1,6 +1,5 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, Float, ARRAY, Enum
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, Float, JSON, Enum, DateTime
 from sqlalchemy.sql.expression import text
-from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.orm import relationship
 from app.db.database import Base
 
@@ -14,7 +13,7 @@ class User(Base):
     password = Column(String, nullable=False)
     full_name = Column(String, nullable=False)
     is_active = Column(Boolean, server_default="True", nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("NOW()"), nullable=False)
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
 
     # New column for role
     role = Column(Enum("admin", "user", name="user_roles"), nullable=False, server_default="user")
@@ -28,7 +27,7 @@ class Cart(Base):
 
     id = Column(Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("NOW()"), nullable=False)
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
     total_amount = Column(Float, nullable=False)
 
     # Relationship with user
@@ -74,9 +73,9 @@ class Product(Base):
     stock = Column(Integer, nullable=False)
     brand = Column(String, nullable=False)
     thumbnail = Column(String, nullable=False)
-    images = Column(ARRAY(String), nullable=False)
+    images = Column(JSON, nullable=False)
     is_published = Column(Boolean, server_default="True", nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("NOW()"), nullable=False)
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
 
     # Relationship with category
     category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)

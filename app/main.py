@@ -1,5 +1,15 @@
 from fastapi import FastAPI 
+from contextlib import asynccontextmanager
+from app.db.database import engine, Base
 from app.routers import products, categories, carts, users, auth, accounts
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Import models to ensure they are registered
+    from app import models
+    # Create tables on startup
+    Base.metadata.create_all(bind=engine)
+    yield
 
 description = """
 Welcome to the E-commerce API! 🚀
@@ -32,7 +42,7 @@ app = FastAPI(
     version="1.0.0",
     contact={
         "name": "Ashwani Kumar",
-        "url": "",
+        "url": "https://example.com"
     },
     swagger_ui_parameters={
         "syntaxHighlight.theme": "monokai",
@@ -41,6 +51,13 @@ app = FastAPI(
         "tryItOutEnabled": True,
         "onComplete": "Ok"
     },
+    lifespan=lifespan
 )
 
 app.include_router(auth.router)
+app.include_router(accounts.router)
+app.include_router(users.router)
+app.include_router(products.router)
+app.include_router(categories.router)
+app.include_router(carts.router)
+
