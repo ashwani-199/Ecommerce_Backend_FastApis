@@ -42,7 +42,7 @@ app = FastAPI(
     version="1.0.0",
     contact={
         "name": "Ashwani Kumar",
-        "url": "https://example.com"
+        "url": "https://github.com/ashwani-199/Ecommerce_Backend_FastApis"
     },
     swagger_ui_parameters={
         "syntaxHighlight.theme": "monokai",
@@ -57,7 +57,7 @@ app = FastAPI(
 app.include_router(auth.router)
 app.include_router(accounts.router)
 app.include_router(users.router)
-app.include_router(products.router)
 app.include_router(categories.router)
+app.include_router(products.router)
 app.include_router(carts.router)
 
