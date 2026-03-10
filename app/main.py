@@ -12,7 +12,7 @@ async def lifespan(app: FastAPI):
     yield
 
 description = """
-Welcome to the E-commerce API! 🚀
+Welcome to the E-commerce Management System API! 🚀
 
 This API provides a comprehensive set of functionalities for managing your e-commerce platform.
 
@@ -34,11 +34,11 @@ Key features include:
 
 For any inquiries, please contact:
 
-* Github: None
+* Github: https://github.com/ashwani-199/Ecommerce_Backend_FastApis
 """
 app = FastAPI(
     description=description,
-    title="E-commerce API",
+    title="E-commerce Management System API",
     version="1.0.0",
     contact={
         "name": "Ashwani Kumar",
@@ -54,10 +54,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+@app.get("/")
+async def welcome():
+    return {"message": "Welcome to the E-commerce Management System API! Visit /docs for API documentation."}
+
 app.include_router(auth.router)
 app.include_router(accounts.router)
 app.include_router(users.router)
 app.include_router(categories.router)
 app.include_router(products.router)
 app.include_router(carts.router)
+
 

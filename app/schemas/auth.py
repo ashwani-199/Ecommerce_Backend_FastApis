@@ -22,6 +22,7 @@ class Signup(BaseModel):
     username: Annotated[str, Field(..., description="The username of the user")]
     email: Annotated[EmailStr, Field(..., description="The email address of the user")]
     password: Annotated[str, Field(..., description="The password of the user")]
+    role: Annotated[str, Field(..., description="The role of the user, either 'admin' or 'user'")]
 
 
 
